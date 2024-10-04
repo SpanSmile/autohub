@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block title %}
+    Autohub
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="popup-container">
+                    <p class="popup">{{ msg }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="page-content">
+        
+        <div class="car-listing-container">
+
+            <div class="car-title">
+                <label id="car-brand">{{ auction['manufacturer'] }}</label>
+                <label id="car-model">{{ auction['model'] }}</label>
+            </div>
+
+            <hr class="separator">
+            <div class="car-image-listing">
+                <img id="car-image" src="{{ url_for('static', filename=auction['url']) }}" alt="Car Image">
+            </div>
+            <div class="car-description">
+                <label>Beskrivning</label>
+                <textarea id="description" cols="50" readonly>{{ auction['description'] }}</textarea>
+            </div>
+            
+            <div class="fact-square">
+                <div class = fact-field>
+                    <label>Biltyp</label>
+                    <span id="car-type">{{ auction['body_type'] }}</span>
+                </div>
+                <div class = fact-field>
+                    <label>Färg</label>
+                    <span id="car-color">{{ auction['color'] }}</span>
+                </div>
+                <div class = fact-field>
+                    <label>Miltal</label>
+                    <span id="mileage-stat">{{ auction['mileage'] }}</span>
+                </div>
+                <div class = fact-field>
+                    <label>Fordonsår / Modellår</label>
+                    <span id="year-stat">{{ auction['production_year'] }}</span>
+                </div>
+                <div class = fact-field>
+                    <label>Bränsle</label>
+                    <span id="fuel-type">{{ auction['fuel_type'] }}</span>
+                </div>
+                <div class = fact-field>
+                    <label>Växellåda</label>
+                    <span id="transmission">{{ auction['transmission'] }}</span>
+                </div>
+                <div class = fact-field>
+                    <label>Hästkrafter</label>
+                    <span id="horsepower">{{ auction['power'] }}</span>
+                </div>
+                <div class = fact-field>
+                    <label>Fyrhjulsdrift</label>
+                    <span id="wheel-drive">{{ auction['four_wheel_drive'] }}</span>
+                </div>
+            </div>
+
+            <button id="show-all-facts">Visa all fakta</button>
+            <div class="additional-fact-square" id="additional-facts" style="display: none;">
+                {% for item,value in allcardata.items() %}
+                <div class="additional-fact">
+                    <label>{{ item }}</label>
+                    <span>{{ value }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="bidding-square">
+                <div class="bidding-content">
+                    <p id="bidding-info"></p>
+                </div>
+                
+                {% if 'user' in session %}
+                <div class="button-container">
+                    <form action="#" method="post">
+                        {% if not auction['bid'] %}
+                        <p for="bid" title="Startbudet">Start budet är: <strong>{{ '{:,.0f}'.format(auction['starting_price']).replace(',', ' ') }}</strong> kr</p>
+                        {% else %}
+                            <p for="bid" title="Högsta budet"> Högsta budet: <strong>{{ '{:,.0f}'.format(auction['bid']).replace(',', ' ') }}</strong> kr ({{ auction['username'] }})</p>
+                        {% endif %}
+                                            
+                    <p >Slut datum: <strong>{{ auction['end_time'] }}</strong></p>
+                    <div id="countdown"></div>
+                    <label for="bid" title="Ange miltal för bilen.">Bud:*</label>
+                    <input type="text" id="bid" name="bid" title="Ange ditt bud i siffror " placeholder="SEK" required required pattern="[0-9]+"><br><br>
+                    <label for="confirm">Ja, jag vill lägga detta budet:*</label>
+                    <input type="checkbox" id="confirm" name="confirm" required><br><br>
+                    <button>Lägg bud</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="button-container">
+                    {% if not auction['bid'] %}
+                    <p for="bid" title="Startbudet">Start budet är: <strong>{{ '{:,.0f}'.format(auction['starting_price']).replace(',', ' ') }}</strong> kr</p>
+                    {% else %}
+                        <p for="bid" title="Högsta budet"> Högsta budet: <strong>{{ '{:,.0f}'.format(auction['bid']).replace(',', ' ') }}</strong> kr ({{ auction['username'] }})</p>
+                    {% endif %}
+                    <p >Slut datum: <strong>{{ auction['end_time'] }}</strong></p>
+                    <div id="countdown"></div>
+                    <button onclick="window.location.href='{{ url_for('login') }}';">Login</button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+<script>
+    document.getElementById('show-all-facts').addEventListener('click', function() {
+    const additionalFacts = document.getElementById('additional-facts');
+    if (additionalFacts.style.display === 'none') {
+        additionalFacts.style.display = 'block';
+    } else {
+        additionalFacts.style.display = 'none';
+    }
+    });
+    var endTime = new Date("{{ auction['end_time'] }}").getTime();
+
+
+var countdownInterval = setInterval(function() {
+
+    var now = new Date().getTime();
+
+
+    var distance = endTime - now;
+
+
+    if (distance < 0) {
+        clearInterval(countdownInterval);
+        document.getElementById("countdown").innerHTML = "Auction ended";
+        return;
+    }
+
+
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24)) + "d"; 
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+
+    document.getElementById("countdown").innerHTML ='<p>Slut om: <strong>' + days + ', ' + hours + ':' + minutes + ':' + seconds + '</strong></p>';
+}, 1000); 
+</script>
+{% endblock %}
+

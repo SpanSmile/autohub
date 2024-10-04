@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+    Autohub - Profile
+{% endblock %}
+
+{% block content %}
+
+
+<div class="profile-info">
+    <h2>{{ session['user'] }}</h2>
+    <p><strong>Email:</strong> john@example.com</p>
+    <p><strong>Location:</strong> New York, USA</p>
+    <p><strong>Interests:</strong> Traveling, Photography, Reading</p>
+</div>
+
+{% endblock %}

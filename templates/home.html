@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}
+    Autohub
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="popup-container">
+                    <p class="popup">{{ msg }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+
+<section class="page-content">
+    <hr class="separator">
+    <div class= "home-search-box-container">
+        <div class="home-search-box">
+            <form action="#" method="POST">
+                <label for="brand">Märke:</label>
+                <select id="brand" name="brand">
+                    <option value="">Välj Märke</option>
+                    {% for auction in auctions %}
+                    <option id="sortbrand" name="sortbrand" value="{{ auction.get('manufacturer') }}">{{ auction.get('manufacturer') }}</option>
+                    {% endfor %}
+                </select>
+                <br>                      
+                <button type="submit">Sök</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="page-content">
+    <hr class="separator">
+    <section class="car-container">
+        {% for auction in auctions %}
+            <div class="car">
+                <a href="{{ url_for('auction_details', auction_id=auction['auction_id']) }}">
+                    <div class="car-image-container">
+                        <img src="{{ url_for('static', filename=auction['url']) }}" alt="{{ auction['auction_id'] }}">
+                        </a>
+                    </div>
+                    <div class="car-info">
+                        <a href="{{ url_for('auction_details', auction_id=auction['auction_id']) }}">
+                        <h3>{{ auction.get('manufacturer') }} {{ auction.get('model') }}</h3>
+                        <div class="info-group">
+                            <ul>
+                                <li><strong>Sluttid:</strong> <span>{{ auction.get('end_time') }}</span></li>
+                                <li><strong>Fordonsår / Modellår:</strong> <span>{{ auction.get('production_year') }}</span></li>
+                            </ul>
+                            <ul>
+                                <li><strong>Miltal:</strong> <span>{{ auction.get('mileage') }}</span></li>
+                                {% if not auction['bid'] %}
+                                <li class="price-info"><strong>Bud:</strong> <span>- kr</span></li>
+                                {% else %}
+                                    {% set bid = auction.get('bid') %}
+                                    <li><strong>Bud:</strong> <span>{{ '{:,.0f}'.format(bid).replace(',', ' ') }} kr</span></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        </a>
+                    </div>                
+            </div>
+        {% endfor %}
+    </section>
+</section>
+{% endblock %}

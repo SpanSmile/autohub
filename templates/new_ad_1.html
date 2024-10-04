@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}
+    Autohub
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="popup-container">
+                    <p class="popup">{{ msg }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    
+<section class="page-content">
+
+    <h2>Registrera Bil</h2>
+    
+    <hr class="separator">
+
+    <div class="home-search-box-container">
+        <form action="#" method="post">
+        <h3>Ange registreringsnummret:</h3>
+        <p>Skriv registreringsnummret så hämtas uppgifterna automatiskt.</p>
+        <div class="register-car-bar">
+            <input type="text" name="reg" class="regnrterm" placeholder="ABC123"required minlength="6" maxlength="6">
+            <button type="submit">Hämta</button>
+            </button>
+        </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+    Autohub
+{% endblock %}
+
+{% block content %}
+<div class="user_ad_header-container">
+    <div class="user-ad-header">
+        <h2>Dina Bilar</h2>
+    </div>
+</div>
+
+
+<section class="page-content">
+    <hr class="separator">
+    <section class="car-container">
+        {% for auction in auctions %}
+            <div class="car">
+                <a href="{{ url_for('auction_details', auction_id=auction['auction_id']) }}">
+                    <div class="car-image-container">
+                        <img src="{{ url_for('static', filename=auction['url']) }}" alt="{{ auction['auction_id'] }}">
+                        </a>
+                    </div>
+                    <div class="car-info">
+                        <a href="{{ url_for('auction_details', auction_id=auction['auction_id']) }}">
+                        <h3>{{ auction.get('manufacturer') }} {{ auction.get('model') }}</h3>
+                        <div class="info-group">
+                            <ul>
+                                <li><strong>Sluttid:</strong> <span>{{ auction.get('end_time') }}</span></li>
+                                <li><strong>Fordonsår / Modellår:</strong> <span>{{ auction.get('production_year') }}</span></li>
+                            </ul>
+                            <ul>
+                                <li><strong>Miltal:</strong> <span>{{ auction.get('mileage') }}</span></li>
+                                {% if not auction['bid'] %}
+                                <li class="price-info"><strong>Bud:</strong> <span>- kr</span></li>
+                                {% else %}
+                                    {% set bid = auction.get('bid') %}
+                                    <li><strong>Bud:</strong> <span>{{ '{:,.0f}'.format(bid).replace(',', ' ') }} kr</span></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        </a>
+                    </div>                
+            </div>
+        {% endfor %}
+    </section>
+</section>
+{% endblock %}

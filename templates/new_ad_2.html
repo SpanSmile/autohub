@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}
+    Autohub
+{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="popup-container">
+                    <p class="popup">{{ msg }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+<div class="container">
+    <div class="car-details">
+        <h2>Bil Specifikationer för: {{ car.get('manufacturer') }} {{ car.get('model') }}</h2>
+        <div class="car-info-ad2">
+            {% for key, value in car.items() %}
+            <div class="info-item">
+                <div class="info-key">{{ key|replace("_", " ")|title }}</div>
+                <div class="info-value">{{ value }}</div>
+                {% if key == 'mileage' %}
+                    {% set mileage_placeholder = value %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="additional-details">
+        <h2>Mer information:</h2>
+        <form action="#" method="post" enctype="multipart/form-data">
+            <label for="mileage" title="Ange miltal för bilen.">Miltal:*</label>
+            <input type="text" id="mileage" name="mileage" title="Ange miltal för bilen." placeholder="{{ car['mileage'] }}" required required pattern="[0-9]+"><br><br>
+            <label for="price" title="Ange vilket startbud bilen ska ha.">Startbud:*</label>
+            <input type="text" id="price" name="price" title="Ange vilket startbud bilen ska ha." required><br><br>
+            <label for="final_price" title="Ange reservationspris bilen ska ha. Dvs vilket pris bilen måste kommer upp innan sluttid.">Reservationspris:*</label>
+            <input type="text" id="final_price" name="final_price" title="Ange reservationspris bilen ska ha. Dvs vilket pris bilen måste kommer upp innan sluttid." required><br><br>
+            <h3>Stämmer uppgifterna om bilen och den är du som är ägaren av bilen?</h3>
+            <label for="confirm">Ja, uppgifterna stämmer och jag äger bilen:*</label>
+            <input type="checkbox" id="confirm" name="confirm" required><br><br>
+            <label for="end_time" title="Välj en slut tid för auktionen.">Slut tid:*</label>
+            <input type="datetime-local" id="end_time" name="end_time" class="calender-input" title="Välj en slut tid för auktionen." required ><br><br>
+            <label for="image" title="Ladda upp en bild på bilen.">Ladda upp bild:</label>
+            <input type="file" id="image" name="image" title="Ladda upp en bild på bilen." accept=".png, .jpg" required><br><br>
+            <label for="additional_info" title="Ange ytterligare information om bilen. Som skador, eventuella uppgraderingar eller någon annan relevant infomation om bilen som inte finns med till vänster.">Ytterligare information:</label><br>
+            <textarea id="additional_info" name="additional_info" rows="4" cols="50" title="Ange ytterligare information om bilen. Som skador, eventuella uppgraderingar eller någon annan relevant infomation om bilen som inte finns med till vänster."></textarea><br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>    
+</div>
+
+<script>
+    var endTimeInput = document.getElementById("end_time");
+    
+    var now = new Date();
+    
+    now.setDate(now.getDate() + 1);
+
+    var minDate = now.toISOString().slice(0, 10);
+    
+    var minDateTime = minDate + "T00:00";
+    
+    endTimeInput.setAttribute("min", minDateTime);
+</script>
+
+{% endblock %}

@@ -1,0 +1,6 @@
+Flask==2.0.1
+Werkzeug==2.0.1
+pymysql==1.1.0
+selenium==4.9.1
+webdriver_manager==4.0.0
+python-dotenv==1.0.1

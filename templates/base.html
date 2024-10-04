@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{% block title %}{% endblock %}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <header class="header">
+            <div class="colorbar"></div>
+            <nav>
+                <ul>
+                    <li class="logo"><a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/auto1.png') }}" alt="Logo" height="60" width="240"></a></li>
+                    {% if 'user' in session %}
+                    <li><a href="{{ url_for('new_ad1') }}" class="lagg-annons">Lägg till annons</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown">{{session['user']}}</a>
+                        <div class="dropdown-content">
+                            <a href="{{ url_for('profile') }}">Profil</a>
+                            <a href="{{ url_for('user_ads') }}">Annonser</a>
+                            <a href="{{ url_for('logout') }}">Logga ut</a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}" class="lagg-annons">Lägg till annons</a></li>
+                    <li><a href="{{ url_for('login') }}" class="headerbutton">Login</a></li>
+                    {% endif %}
+                
+                </ul>
+            </nav>
+        </header>
+
+        {% block content %}{% endblock %}
+
+        <footer>
+            <p>&copy; 2024 Autohub. All rights reserved.</p>
+        </footer>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var path = window.location.pathname;    
+                var navLinks = document.querySelectorAll('.dropdown a, .headerbutton');
+                navLinks.forEach(function(link) {
+                    if (link.getAttribute('href') === path) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        </script>       
+    </body>
+</html>
